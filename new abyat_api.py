@@ -88,9 +88,7 @@ class AbyatApiSpider(scrapy.Spider):
     print (tabulate(data, headers=['Key','category','Key' , 'category']))
     time.sleep(5)
     
-   
     variants_dict= {}
-    
     def start_requests(self):
         sub_catagories_list = ['Plants'	,'Outdoor Accessories',	'Dining Tables',	'Wallpaper',	'Wall Cladding',	'Decorative Elements',	'Wall Art',	'Painted and Printed Art',	'Hanging Frames',	'Clocks',	'Wood Texture Floor',	'Wall Tiles',	'Stairs',	'Profiles',	'Outdoor Floor',	'Mosaic',	'Floor Tiles',	'Office Chairs',	'Desks',	'Home Storages',	'Rugs',	'Kids Rugs',	'Parquet',	'Sun Loungers',	'Outdoor Seating',	'Outdoor Dining',	'Gazebos',	'Tables',	'Sofas',	'Cabinets',	'Wiring Accessories',	'Surface Mount',	'Recessed Mount',	'Outdoor Lighting',	'LED Strip and Fiber',	'Electrical Accessories',	'Decorative Lighting',	'Chandelier',	'Bulbs',	'Bedroom',	'School Essentials',	'Outdoors Essentials',	'Organization Essentials',	'Living Rooms Essentials',	'Kitchen Essentials',	'Dining Essentials',	'Baths Essentials',	'Dining Room Sets',	'Dining Chairs',	'Serveware',	'Kitchen Utensils',	'Kitchen Storages',	'Drinkware',	'Dinnerware',	'Cutleries',	'Roll Curtains',	'Ready Made Curtains',	'Lanterns',	'Home Fragrances',	'Nightstands',	'Mattresses',	'Chairs',	'Beds',	'Countertop Bath Accessories',	'Clothes Racks',	'Bedding Basics',	'Bathroom Mirrors',	'Sanitary Ware',	'Sanitary Fittings',	'Plumbing Accessories',	'Mirrors',	'Bathtubs',	'Bathroom Furniture',	'Bathroom Accessories',	'Adhesive%20%26%20Grout',	'Babies%20Bedding%20%26%20Bath',	'Bar%20Tables%20%26%20Counter%20Stools',	'Bathroom%20Sets%2C%20Holders%20%26%20Essentials',	'Blanket%20%26%20Throws',	'Bookcases%20%26%20Shelves',	'Buffets%20%26%20Sideboards',	'Candles%20%26%20Candle%20Holders',	'Chests%20%26%20Dressers',	'Coat%20Hanger%20%26%20Shoe%20Racks',	'Decorative%20%26%20Floor%20Pillows',	'Flowers%20%26%20Leaves',	'Jewelry%20%26%20Organization%20Boxes',	'Ornaments%20%26%20Photo%20Frames',	'Pots%20%26%20Planters',	'Shower%20Tray%20%26%20Enclosures',	'Study%20%26%20Play%20Room',	'Tea%20%26%20Coffee',	'Towels%2C%20Mats%20%26%20Bathrobes',	'Toys%20%26%20Play%20Room%20Accessories',	'Trays%20%26%20Trolleys',	'TV%20Stands%20%26%20Wall%20Units',	'Vases%20%26%20Planters']
         sub_catagories_pages = [5,3,2,13,2,2,2,4,2,1,2,6,1,1,1,2,5,1,1,5,3,1,4,1,2,2,1,4,4,1,4,2,2,3,1,1,6,4,1,3,2,1,2,1,1,2,1,1,2,6,3,3,3,8,3,8,1,2,3,2,2,1,2,2,1,9,1,3,5,2,2,1,2,5,1,1,1,2,2,2,1,7,2,2,8,3,3,2,4,1,1,6,2,2,4,2,4]
@@ -110,20 +108,13 @@ class AbyatApiSpider(scrapy.Spider):
         else : 
             range_pages = sub_catagories_pages[key-1]     
             key_catagory = sub_catagories_list[key-1]
-            
-
             for page in range (range_pages):              
                 link_api = f'https://api.abyat.com/search/?locale=ar-SA&currency=SAR&page={page+1}&size=48&marketplace=SA&subCategory={sub_catagories_list[key-1]}'
                 print('key ------------> ',key)
-
-   
                 try : 
                     yield scrapy.Request(url=link_api,
                                     callback=self.parse_sub_catagory_page,
                                     meta = {'key_catagory':key_catagory})
-
-
-
                 except :
                     print(f"--------------------{link_api}")
                     pass
@@ -144,11 +135,6 @@ class AbyatApiSpider(scrapy.Spider):
                 yield response.follow(url = f'https://api.abyat.com/search/?locale=ar-SA&currency=SAR&page={page_number}&size=48&marketplace=SA&lineID={id}',
                                 callback = self.parse_lineid,
                                 meta = {'key_catagory':key_catagory})
-
-
-
-
-
 
     def parse_lineid(self,response):
         # key = response.meta['key']
@@ -183,63 +169,36 @@ class AbyatApiSpider(scrapy.Spider):
         
         
         
-        try : l.add_value('Arabic_Description', data['description'])
-        except : pass
-        try : l.add_value('Arabic_Name', data['title'])
-        except : pass
-        try :l.add_value('Arabic_Care_Instructions_general' , data['careInstructions'].get('general'))
-        except : pass
-        try :l.add_value('Arabic_Care_Instructions_washing' , data['careInstructions'].get('washing'))
-        except : pass
-        try :l.add_value('Arabic_Care_Instructions_drying' , data['careInstructions'].get('drying'))
-        except : pass
-        try :l.add_value('Arabic_Care_Instructions_disclaimer' , data['careInstructions'].get('disclaimer'))
-        except : pass
-        try :l.add_value('Arabic_categoryId' , data['category'] )
-        except : pass
-        try :l.add_value('Arabic_subCategoryId' , data['subCategory'])
-        except : pass
-        try :l.add_value('Arabic_color' , data['color'])
-        except : pass
-        try :l.add_value('Arabic_category' , data['merchandiseCategory'])
-        except : pass
-        try :l.add_value('Arabic_countryOfOrigin' , data['countryOfOrigin'])
-        except : pass
-        try :l.add_value('Arabic_dimension' , data['dimension'].get('dimension')) 
-        except : pass
-        try :l.add_value('Arabic_length' , data['dimension'].get('length'))
-        except : pass
-        try :l.add_value('Arabic_width' , data['dimension'].get('width'))
-        except : pass
-        try :l.add_value('Arabic_height' , data['dimension'].get('height'))
-        except : pass
-        try :l.add_value('Arabic_unit' , data['dimension'].get('unit'))
-        except : pass
-
-        try :l.add_value('Arabic_grossWeight' , data['grossWeight'].get('grossWeight'))
-        except : pass
-        
-        try :l.add_value('Arabic_finish' , data['finish'])
-        except : pass
-        try :l.add_value('Arabic_style' , data['style'])
-        except : pass
-        try :l.add_value('Arabic_shape' , data['shape'])
-        except : pass
-        try : l.add_value('Arabic_materials' , data['materials'])
-        except : pass
-        try : l.add_value('Arabic_Category' , str(data['title'] + ' & ' + str(data['merchandiseCategory']) + ' & ' +str(data['subCategory'])+ ' & ' + str(data['category'])  ))
-        except : pass
-        try : l.add_value('Arabic_stock' , data['productAvailability'].get('stock').get('RY'))
-        except : pass
-
-
-
-
-
-        # yield l.load_item()
-        # for product_id in productid_list : 
-        yield response.follow(url = f'https://api.abyat.com/products/{product_id}?locale=en-US&currency=SAR&marketplace=SA&withInstallation=true&forDisplay=true',
-            callback = self.products_page_parse , meta = {'l' : l}) # the description is wrong 
+        try :
+            l.add_value('Arabic_Description', data['description'])
+            l.add_value('Arabic_Name', data['title'])
+            l.add_value('Arabic_Care_Instructions_general' , data['careInstructions'].get('general'))
+            l.add_value('Arabic_Care_Instructions_washing' , data['careInstructions'].get('washing'))
+            l.add_value('Arabic_Care_Instructions_drying' , data['careInstructions'].get('drying'))
+            l.add_value('Arabic_Care_Instructions_disclaimer' , data['careInstructions'].get('disclaimer'))
+            l.add_value('Arabic_categoryId' , data['category'] )
+            l.add_value('Arabic_subCategoryId' , data['subCategory'])
+            l.add_value('Arabic_color' , data['color'])
+            l.add_value('Arabic_category' , data['merchandiseCategory'])
+            l.add_value('Arabic_countryOfOrigin' , data['countryOfOrigin'])
+            l.add_value('Arabic_dimension' , data['dimension'].get('dimension')) 
+            l.add_value('Arabic_length' , data['dimension'].get('length'))
+            l.add_value('Arabic_width' , data['dimension'].get('width'))
+            l.add_value('Arabic_height' , data['dimension'].get('height'))
+            l.add_value('Arabic_unit' , data['dimension'].get('unit'))
+            l.add_value('Arabic_grossWeight' , data['grossWeight'].get('grossWeight'))
+            l.add_value('Arabic_finish' , data['finish'])
+            l.add_value('Arabic_style' , data['style'])
+            l.add_value('Arabic_shape' , data['shape'])
+            l.add_value('Arabic_materials' , data['materials'])
+            l.add_value('Arabic_Category' , str(data['title'] + ' & ' + str(data['merchandiseCategory']) + ' & ' +str(data['subCategory'])+ ' & ' + str(data['category'])  ))
+            l.add_value('Arabic_stock' , data['productAvailability'].get('stock').get('RY'))
+           
+            yield response.follow(url = f'https://api.abyat.com/products/{product_id}?locale=en-US&currency=SAR&marketplace=SA&withInstallation=true&forDisplay=true',
+                callback = self.products_page_parse , meta = {'l' : l}) 
+            
+     except Exception as e : 
+        print(f'The Element Not Valid : {e}')
         
             
 
@@ -248,70 +207,43 @@ class AbyatApiSpider(scrapy.Spider):
         time.sleep(2)
 
         data = json.loads(response.body)
-        try :l.add_value('SKU', data['productId'])   
-        except : pass
-        try :l.add_value('English_Name' , data['title'])
-        except : pass
-        try :l.add_value('Price' , data['price'].get('amount'))
-        except : pass
-        try :l.add_value('English_Description' , data['description'])
-        except : pass
-        try :l.add_value('Care_Instructions_general' , data['careInstructions'].get('general'))
-        except : pass
-        try :l.add_value('Care_Instructions_washing' , data['careInstructions'].get('washing'))
-        except : pass
-        try :l.add_value('Care_Instructions_drying' , data['careInstructions'].get('drying'))
-        except : pass
-        try :l.add_value('Care_Instructions_disclaimer' , data['careInstructions'].get('disclaimer'))
-        except : pass
-        try :l.add_value('categoryId' , data['categoryId'] )
-        except : pass
-        try :l.add_value('subCategoryId' , data['subCategoryId'])
-        except : pass
-        try :l.add_value('color' , data['color'])
-        except : pass
-        try :l.add_value('category' , data['category'])
-        except : pass
-        try :l.add_value('countryOfOrigin' , data['countryOfOrigin'])
-        except : pass
-        try :l.add_value('dimension' , data['dimension'].get('dimension')) 
-        except : pass
-        try :l.add_value('length' , data['dimension'].get('length'))
-        except : pass
-        try :l.add_value('width' , data['dimension'].get('width'))
-        except : pass
-        try :l.add_value('height' , data['dimension'].get('height'))
-        except : pass
-        try :l.add_value('unit' , data['dimension'].get('unit'))
-        except : pass
-        try :l.add_value('productImages' , data['images'].get('productImages'))
-        except : pass
-        try :l.add_value('grossWeight' , data['grossWeight'].get('grossWeight'))
-        except : pass
-        try : l.add_value('landscape' , data['images'].get('lifestyleImages')[0].get('landscape'))
-        except : pass   
-        try : l.add_value('sizeImages' , data['images'].get('sizeImages'))
-        except : pass 
-        try :l.add_value('finish' , data['finish'])
-        except : pass
-        try :l.add_value('style' , data['style'])
-        except : pass
-        try :l.add_value('shape' , data['shape'])
-        except : pass
-        try :l.add_value('isHandmade' , data['isHandmade'])
-        except : pass 
-        try : l.add_value('numberOfPieces', data['numberOfPieces'][0])
-        except : pass
-        try : l.add_value('Installation_Price',data['deliveryPrice'])
-        except : pass  
-        try : l.add_value('materials' , data['materials'])
-        except : pass
-        try : l.add_value('Category' , str(data['categoryId']) + ' & ' +str(data['subCategoryId'])+ ' & ' + str(data['merchandiseCategory'])+ ' & ' + str(data['title']))
-        except : pass
-        try : l.add_value('stock' , data['productAvailability'].get('stock').get('RY'))
-        except : pass
-        try : l.add_value('Manufacturer' , data['articleGroupId'])
-        except : pass
+        try :
+            l.add_value('SKU', data['productId'])   
+            l.add_value('English_Name' , data['title'])
+            l.add_value('Price' , data['price'].get('amount'))
+            l.add_value('English_Description' , data['description'])
+            l.add_value('Care_Instructions_general' , data['careInstructions'].get('general'))
+            l.add_value('Care_Instructions_washing' , data['careInstructions'].get('washing'))
+            l.add_value('Care_Instructions_drying' , data['careInstructions'].get('drying'))
+            l.add_value('Care_Instructions_disclaimer' , data['careInstructions'].get('disclaimer'))
+            l.add_value('categoryId' , data['categoryId'] )
+            l.add_value('subCategoryId' , data['subCategoryId'])
+            l.add_value('color' , data['color'])
+            l.add_value('category' , data['category'])
+            l.add_value('countryOfOrigin' , data['countryOfOrigin'])
+            l.add_value('dimension' , data['dimension'].get('dimension')) 
+            l.add_value('length' , data['dimension'].get('length'))
+            l.add_value('width' , data['dimension'].get('width'))
+            l.add_value('height' , data['dimension'].get('height'))
+            l.add_value('unit' , data['dimension'].get('unit'))
+            l.add_value('productImages' , data['images'].get('productImages'))
+            l.add_value('grossWeight' , data['grossWeight'].get('grossWeight'))
+            l.add_value('landscape' , data['images'].get('lifestyleImages')[0].get('landscape'))
+            l.add_value('sizeImages' , data['images'].get('sizeImages'))
+            l.add_value('finish' , data['finish'])
+            l.add_value('style' , data['style'])
+            l.add_value('shape' , data['shape'])
+            l.add_value('isHandmade' , data['isHandmade'])
+            l.add_value('numberOfPieces', data['numberOfPieces'][0])
+            l.add_value('Installation_Price',data['deliveryPrice'])
+            l.add_value('materials' , data['materials'])
+            l.add_value('Category' , str(data['categoryId']) + ' & ' +str(data['subCategoryId'])+ ' & ' + str(data['merchandiseCategory'])+ ' & ' + str(data['title']))   
+            l.add_value('stock' , data['productAvailability'].get('stock').get('RY'))
+            l.add_value('Manufacturer' , data['articleGroupId'])
+            
+        except Exception as e : 
+            print(f'The Element Not Valid : {e}')
+        
         
 
 
